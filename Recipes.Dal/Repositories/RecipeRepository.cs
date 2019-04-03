@@ -37,5 +37,11 @@ namespace Recipes.Dal.Repositories
             var recipe = _db.Recipes.Where(r => r.Name == name).FirstOrDefault();
             return recipe;
         }
+
+        //public List<Recipe> GetRecipeByIngredient(string ingredient)
+        //{
+        //    var recipes = _db.Recipes.Where(r => r.Ingredients = ingredient).ToList();
+        //    return recipes;
+        //}
     }
 }
