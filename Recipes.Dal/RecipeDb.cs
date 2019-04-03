@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Recipes.Bo;
-using Recipes.Dal.Api;
 
 namespace Recipes.Dal
 {
@@ -11,5 +10,6 @@ namespace Recipes.Dal
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
     }
 }

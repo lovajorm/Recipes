@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Recipes.Bo;
 
-namespace Recipes.Bo
+namespace Recipes.Dto
 {
-    public class Recipe
+    public class RecipeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
