@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipes.Dal;
 
 namespace Recipes.Dal.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    partial class RecipeDbModelSnapshot : ModelSnapshot
+    [Migration("20190403180558_addedRecipeIngredients")]
+    partial class addedRecipeIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +41,13 @@ namespace Recipes.Dal.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("RecipeId");
+
                     b.Property<float>("UnitPrice");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredients");
                 });
@@ -71,26 +77,17 @@ namespace Recipes.Dal.Migrations
 
                     b.Property<int>("IngredientId");
 
-                    b.Property<int>("Measure");
-
-                    b.Property<float>("Value");
+                    b.Property<string>("Measue");
 
                     b.HasKey("RecipeId", "IngredientId");
-
-                    b.HasAlternateKey("IngredientId", "RecipeId");
 
                     b.ToTable("RecipeIngredients");
                 });
 
-            modelBuilder.Entity("Recipes.Bo.RecipeIngredient", b =>
+            modelBuilder.Entity("Recipes.Bo.Ingredient", b =>
                 {
-                    b.HasOne("Recipes.Bo.Ingredient", "Ingredient")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Recipes.Bo.Recipe", "Recipe")
-                        .WithMany("RecipeIngredients")
+                    b.HasOne("Recipes.Bo.Recipe")
+                        .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

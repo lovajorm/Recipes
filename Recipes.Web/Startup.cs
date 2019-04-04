@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Recipes.Common;
 using Recipes.Dal;
 using Recipes.Dal.Api;
 using Recipes.Dal.Repositories;
@@ -29,6 +30,14 @@ namespace Recipes.Web
 
             //Adding interface services
             services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IIngredientRepository, IngredientRepository>();
+
+            var config = new AutoMapper.MapperConfiguration(c =>
+            {
+                c.AddProfile(new Profile());
+            });
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

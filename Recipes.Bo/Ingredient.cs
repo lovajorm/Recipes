@@ -7,6 +7,6 @@ namespace Recipes.Bo
         public int Id { get; set; }
         public string Name { get; set; }
         public float UnitPrice { get; set; }
-        public int RecipeId { get; set; }
+        public IList<RecipeIngredient> Recipes { get; set; }
     }
 }

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipes.Dal;
 
 namespace Recipes.Dal.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    partial class RecipeDbModelSnapshot : ModelSnapshot
+    [Migration("20190404045711_changedColumnsRecipeIngredient")]
+    partial class changedColumnsRecipeIngredient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,19 +82,6 @@ namespace Recipes.Dal.Migrations
                     b.HasAlternateKey("IngredientId", "RecipeId");
 
                     b.ToTable("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("Recipes.Bo.RecipeIngredient", b =>
-                {
-                    b.HasOne("Recipes.Bo.Ingredient", "Ingredient")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Recipes.Bo.Recipe", "Recipe")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

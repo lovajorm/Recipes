@@ -8,7 +8,7 @@ namespace Recipes.Dto
         public int Id { get; set; }
         public string Name { get; set; }
         public float UnitPrice { get; set; }
-        public int RecipeId { get; set; }
-        public List<Recipe> Recipes { get; set; }
+        public RecipeIngredientDto RecipeIngredientDto { get; set; }
+        public List<RecipeIngredientDto> RecipeIngredientDtos { get; set; }
     }
 }

@@ -5,8 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190404060041_configureManyToManyRelationship.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Recipes.Bo\Recipes.Bo.csproj" />
     <ProjectReference Include="..\Recipes.Dal.Api\Recipes.Dal.Api.csproj" />
+    <ProjectReference Include="..\Recipes.Dto\Recipes.Dto.csproj" />
   </ItemGroup>
 
   <ItemGroup>

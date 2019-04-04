@@ -1,10 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Bo;
-using Recipes.Dal;
 using Recipes.Dal.Api;
+using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using Newtonsoft.Json.Linq;
+using System.Web.Http;
+using System.Net;
+using AutoMapper;
+using Recipes.Dto;
 
 namespace Recipes.Web.Controllers
 {
@@ -14,32 +23,43 @@ namespace Recipes.Web.Controllers
     {
         private IRecipeRepository _recipeRepository;
         private readonly ILog _log = LogManager.GetLogger(typeof(Program));
+        private readonly IMapper _mapper;
 
-        public RecipesController(IRecipeRepository recipeRepository)
+        public RecipesController(IRecipeRepository recipeRepository, IMapper mapper)
         {
             _recipeRepository = recipeRepository;
+            _mapper = mapper;
         }
 
         // GET api/recipes
+        //List all recipes
         [HttpGet]
-        public ActionResult<List<Recipe>> Get()
+        public ActionResult<string> Get()
         {
             var recipes = _recipeRepository.GetAllRecipes();
+
+            string jsonData = JsonConvert.SerializeObject(recipes);
+
             _log.Info("Listing all recipes.");
-            return recipes;
+            return jsonData;
         }
 
         // GET api/recipes/5
-        [HttpGet("{id}")]
+        //Get a recipe by id
+        [HttpGet("{id:int}")]
         public ActionResult<Recipe> Get(int id)
         {
             var recipe = _recipeRepository.GetRecipe(id);
+
+            JsonConvert.SerializeObject(recipe, Formatting.Indented);
+
             _log.Info("Getting a recipe by id.");
             return recipe;
         }
 
         // GET api/recipes/category/5
-        [HttpGet("category/{id}")]
+        //List all recipes by category
+        [HttpGet("category/{id:int}")]
         public ActionResult<List<Recipe>> GetByCategory(int id)
         {
             var recipes = _recipeRepository.GetByCategory(id);
@@ -47,7 +67,8 @@ namespace Recipes.Web.Controllers
             return recipes;
         }
 
-        // GET api/recipes/name/5
+        // GET api/recipes/name/tomato soup
+        //Get a recipe by recipe name
         [HttpGet("name/{name}")]
         public ActionResult<Recipe> GetByName(string name)
         {
@@ -56,11 +77,26 @@ namespace Recipes.Web.Controllers
             return recipe;
         }
 
+
         // POST api/recipes
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("create")]
+        public HttpResponseMessage CreateRecipe([FromBody]Recipe recipe)
         {
+            try
+            {
+                //var recipe = _mapper.Map<Recipe>(recipeDto);
+                _recipeRepository.CreateRecipe(recipe);
+                _log.Info("Creating a new recipe.");
+                return new HttpResponseMessage(HttpStatusCode.Created);
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to create recipe. {e}");
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
         }
+
+
 
         // PUT api/recipes/5
         [HttpPut("{id}")]

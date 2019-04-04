@@ -12,5 +12,7 @@ namespace Recipes.Dal.Api
         List<Recipe> GetByCategory(int id);
 
         Recipe GetRecipeByName(string name);
+
+        Recipe CreateRecipe(Recipe recipe);
     }
 }

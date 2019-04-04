@@ -7,6 +7,12 @@ namespace Recipes.Dal
     {
         public RecipeDb(DbContextOptions<RecipeDb> options) : base(options) { }
 
+        //Setting a combined primary key in RecipeIngredient
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<RecipeIngredient>().HasKey(t => new { t.RecipeId, t.IngredientId });
+        }
+
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Category> Categories { get; set; }

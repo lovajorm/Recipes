@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Web", "Recipes.Web\Recipes.Web.csproj", "{DB4332D1-788F-4884-B661-247AF41B5D32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Web", "Recipes.Web\Recipes.Web.csproj", "{DB4332D1-788F-4884-B661-247AF41B5D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Bo", "Recipes.Bo\Recipes.Bo.csproj", "{830BD228-9896-44B2-9173-A6B7BD2D33AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Bo", "Recipes.Bo\Recipes.Bo.csproj", "{830BD228-9896-44B2-9173-A6B7BD2D33AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Dal", "Recipes.Dal\Recipes.Dal.csproj", "{D46443D4-90CF-4886-8669-C7AB5A880FE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Dal", "Recipes.Dal\Recipes.Dal.csproj", "{D46443D4-90CF-4886-8669-C7AB5A880FE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Test", "Recipe.Test\Recipes.Test.csproj", "{EF89FDB0-B958-4123-A014-45FFB08CEE3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Test", "Recipe.Test\Recipes.Test.csproj", "{EF89FDB0-B958-4123-A014-45FFB08CEE3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Dal.Api", "Recipes.Dal.Api\Recipes.Dal.Api.csproj", "{E283EAF2-CBF8-46CA-9E31-62C79DC60E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Dal.Api", "Recipes.Dal.Api\Recipes.Dal.Api.csproj", "{E283EAF2-CBF8-46CA-9E31-62C79DC60E18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Dto", "Recipes.Dto\Recipes.Dto.csproj", "{C54C0EA1-D3AB-4290-A0CE-F5D9005567B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recipes.Dto", "Recipes.Dto\Recipes.Dto.csproj", "{C54C0EA1-D3AB-4290-A0CE-F5D9005567B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recipes.Common", "Recipes.Common\Recipes.Common.csproj", "{B1C2A3D2-A86B-44DF-B475-8A21A4D6BA79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{C54C0EA1-D3AB-4290-A0CE-F5D9005567B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C54C0EA1-D3AB-4290-A0CE-F5D9005567B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C54C0EA1-D3AB-4290-A0CE-F5D9005567B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1C2A3D2-A86B-44DF-B475-8A21A4D6BA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1C2A3D2-A86B-44DF-B475-8A21A4D6BA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1C2A3D2-A86B-44DF-B475-8A21A4D6BA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1C2A3D2-A86B-44DF-B475-8A21A4D6BA79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

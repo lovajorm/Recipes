@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Internal;
 using Recipes.Bo;
+using Recipes.Bo.Enum;
 
 namespace Recipes.Dal
 {
@@ -32,18 +33,18 @@ namespace Recipes.Dal
 
             var ingredient = new Ingredient[]
             {
-                new Ingredient{Name = "Olive oil"},
-                new Ingredient{Name = "Onion"},
-                new Ingredient{Name = "Tomato"},
-                new Ingredient{Name = "Garlic"},
-                new Ingredient{Name = "Basil"},
-                new Ingredient{Name = "Lentil"},
-                new Ingredient{Name = "Butter"},
-                new Ingredient{Name = "Egg"},
-                new Ingredient{Name = "Cocoa powder"},
-                new Ingredient{Name = "Sugar"},
-                new Ingredient{Name = "Flour"},
-                new Ingredient{Name = "Salt"},
+                new Ingredient{Name = "Olive oil", UnitPrice = 40},
+                new Ingredient{Name = "Onion", UnitPrice = 5},
+                new Ingredient{Name = "Tomato", UnitPrice = 10},
+                new Ingredient{Name = "Garlic", UnitPrice = 10},
+                new Ingredient{Name = "Basil", UnitPrice = 20},
+                new Ingredient{Name = "Lentil", UnitPrice = 40},
+                new Ingredient{Name = "Butter", UnitPrice = 30},
+                new Ingredient{Name = "Egg", UnitPrice = 25},
+                new Ingredient{Name = "Cocoa powder", UnitPrice = 25},
+                new Ingredient{Name = "Sugar", UnitPrice = 25},
+                new Ingredient{Name = "Flour", UnitPrice = 20},
+                new Ingredient{Name = "Salt", UnitPrice = 5},
             };
             foreach (Ingredient i in ingredient)
             {
@@ -51,34 +52,19 @@ namespace Recipes.Dal
             }
             recipeDb.SaveChanges();
 
+
             var recipe = new Recipe[]
             {
                 new Recipe{Name = "Tomato Soup", Description = "Add the onion and carrots and saute for 8-10 minutes, until tender. Add the garlic and cook for 1 minute. Add the tomatoes, tomato paste, basil, chicken stock, salt, and pepper and stir well. Bring the soup to a boil, lower the heat, and simmer, uncovered, for 30 minutes, until the tomatoes are very tender.",
-                    Ingredients = new List<Ingredient>()
-                    {
-                        new Ingredient{Name = "Olive oil"}, new Ingredient{Name = "Tomatos"}, new Ingredient{Name = "Onion"}, new Ingredient{Name = "Salt"}, new Ingredient{Name = "Pepper"},
-                    },
                     CategoryId = 2, Difficulty = Difficulty.Easy},
 
                 new Recipe{Name = "Vegetable Lasagna", Description = "Stir the ricotta cheese, 1/2 cup Parmesan cheese and eggs in a medium bowl and set it aside.  Season the beef as desired.  In a 3-quart saucepan over medium-high heat, cook the beef until it's well browned, stirring often to break up the meat. Pour off any fat. Stir the sauce in the saucepan.",
-                    Ingredients = new List<Ingredient>()
-                    {
-                        new Ingredient{Name = "Lasagne"}, new Ingredient{Name = "Tomatos"}, new Ingredient{Name = "Onion"}, new Ingredient{Name = "Aubergine"}, new Ingredient{Name = "Pepper"},
-                    },
                     CategoryId = 3, Difficulty = Difficulty.Hard},
 
                 new Recipe{Name = "Brownies", Description = "Preheat oven to 350 degrees F. Line a metal 9x9 pan with parchment paper. Pour melted butter into a large mixing bowl. Whisk in sugar by hand until smooth, 30 seconds. Add in eggs and vanilla extract. Whisk 1 minute. Whisk in melted chocolate until combined and smooth. Use a rubber spatula to stir in flour, cocoa powder, and salt until just combined. Stir in whole chocolate chips. Pour into prepared pan and smooth out. Bake in the preheated oven for 30 minutes.Let cool in pan 30 minutes before slicing.",
-                    Ingredients = new List<Ingredient>()
-                    {
-                        new Ingredient{Name = "Flour"}, new Ingredient{Name = "Sugar"}, new Ingredient{Name = "Cocoa powder"}, new Ingredient{Name = "Egg"}, new Ingredient{Name = "Butter"},
-                    },
                     CategoryId = 1, Difficulty = Difficulty.Intermediate},
 
                 new Recipe{Name = "Lentil soup", Description = "Preheat oven to 350 degrees F. Line a metal 9x9 pan with parchment paper. Pour melted butter into a large mixing bowl. Whisk in sugar by hand until smooth, 30 seconds. Add in eggs and vanilla extract. Whisk 1 minute. Whisk in melted chocolate until combined and smooth. Use a rubber spatula to stir in flour, cocoa powder, and salt until just combined. Stir in whole chocolate chips. Pour into prepared pan and smooth out. Bake in the preheated oven for 30 minutes.Let cool in pan 30 minutes before slicing.",
-                    Ingredients = new List<Ingredient>()
-                    {
-                        new Ingredient{Name = "Olive oil"}, new Ingredient{Name = "Lentils"}, new Ingredient{Name = "Basil"}, new Ingredient{Name = "Salt"}, new Ingredient{Name = "Pepper"},
-                    },
                     CategoryId = 2, Difficulty = Difficulty.Easy},
             };
             foreach (Recipe r in recipe)

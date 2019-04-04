@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipes.Dal;
 
 namespace Recipes.Dal.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    partial class RecipeDbModelSnapshot : ModelSnapshot
+    [Migration("20190404055354_remakeRecipeIngredients")]
+    partial class remakeRecipeIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

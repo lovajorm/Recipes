@@ -9,6 +9,6 @@ namespace Recipes.Bo
         public string Description { get; set; }
         public int CategoryId { get; set; }
         public Difficulty Difficulty { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
+        public IList<RecipeIngredient> RecipeIngredients { get; set; }
     }
 }
