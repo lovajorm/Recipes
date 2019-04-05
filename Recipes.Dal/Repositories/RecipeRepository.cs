@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using log4net;
 using Recipes.Bo;
-using Recipes.Bo.Enum;
 using Recipes.Dal.Api;
-using Recipes.Dto;
 
 namespace Recipes.Dal.Repositories
 {
@@ -12,6 +12,7 @@ namespace Recipes.Dal.Repositories
     {
         private RecipeDb _db;
         private readonly IMapper _mapper;
+        private readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public RecipeRepository(RecipeDb db, IMapper mapper)
         {
@@ -19,87 +20,77 @@ namespace Recipes.Dal.Repositories
             _mapper = mapper;
         }
 
+        //List all recipes
         public List<Recipe> GetAllRecipes()
         {
             var recipes = _db.Recipes.ToList();
             return recipes;
         }
 
+        //Get a recipe by Id
         public Recipe GetRecipe(int id)
         {
             var recipe = _db.Recipes.FirstOrDefault(r => r.Id == id);
             return recipe;
         }
 
+        //List all recipes by category
         public List<Recipe> GetByCategory(int id)
         {
             var recipes = _db.Recipes.Where(r => r.CategoryId == id).ToList();
             return recipes;
         }
 
+        //Get a recipe by name
         public Recipe GetRecipeByName(string name)
         {
             var recipe = _db.Recipes.Where(r => r.Name == name).FirstOrDefault();
             return recipe;
         }
 
-        public Recipe CreateRecipe(Recipe recipe)
+        //List all recipes by ingredient
+        public List<Recipe> GetRecipeByIngredient(string ingredient)
         {
-            _db.Recipes.Add(new Recipe()
-            {
-                Id = recipe.Id,
-                Name = recipe.Name,
-                Description = recipe.Description,
-                CategoryId = recipe.CategoryId,
-                Difficulty = recipe.Difficulty,
-                //RecipeIngredients = new List<RecipeIngredient>()
-                //{
-                //    new RecipeIngredient{RecipeId = recipe.Id, IngredientId = ingredient.Id, Value = recipeIngredient.Value, Measure = recipeIngredient.Measure},
-                //},
-            });
+            //var recipe = _db.Recipes.Where(r => r.RecipeIngredients.Contains(recipeIngredient)).ToList();
 
-            //var ingred = _mapper.Map<List<IngredientDto>>(ingredients);
+            //var recipes = _db.Recipes.Where(r => r.RecipeIngredients)
 
-            AddIngredientsToRecipeIngredients(recipe, recipe.RecipeIngredients);
-
-            _db.SaveChanges();
-
-            //var newRecipe = new Recipe();
-
-            //newRecipe.Name = recipe.Name;
-            //newRecipe.Description = recipe.Description;
-            //newRecipe.CategoryId = recipe.CategoryId;
-            //newRecipe.Difficulty = recipe.Difficulty;
-
-            //_db.Recipes.Add(newRecipe);
-
-            return recipe;
+            //var recipes = _db.Recipes.Where(r => r.RecipeIngredients = ingredient).ToList();
+            return new List<Recipe>();
         }
 
-        public void AddIngredientsToRecipeIngredients(Recipe recipe, IList<RecipeIngredient> recipeIngredients)
+        //Create a new recipe
+        public void CreateRecipe(Recipe recipe)
         {
-            var recipeIngredient2 = new RecipeIngredient()
+            var recipes = _db.Recipes.FirstOrDefault(r => r.Id == recipe.Id);
+            if (recipes == null)
             {
-                RecipeId = recipe.Id,
-                IngredientId = recipe.RecipeIngredients[0].IngredientId,
-                Value = recipe.RecipeIngredients[0].Value,
-                Measure = recipe.RecipeIngredients[0].Measure
-            };
+                var recipeIngredients = new List<RecipeIngredient>();
 
-            //var recipeIng = _mapper.Map<RecipeIngredient>(recipeIngredient2);
+                foreach (var ingredient in recipe.RecipeIngredients)
+                {
+                    var recipeIngredient2 = new RecipeIngredient()
+                    {
+                        RecipeId = ingredient.RecipeId,
+                        IngredientId = ingredient.IngredientId,
+                        Value = ingredient.Value,
+                        Measure = ingredient.Measure
+                    };
+                    recipeIngredients.Add(recipeIngredient2);
+                }
 
-            recipeIngredients.Add(recipeIngredient2);
-            _db.RecipeIngredients.Add(recipeIngredient2);
-            _db.SaveChanges();
+                var newRecipe = new Recipe()
+                {
+                    Name = recipe.Name,
+                    Description = recipe.Description,
+                    CategoryId = recipe.CategoryId,
+                    Difficulty = recipe.Difficulty,
+                    RecipeIngredients = recipeIngredients
+                };
 
-            //var recipeIngDto = _mapper.Map<IList<RecipeIngredient>>(recipeIngredients);
-            //return recipeIngDto;
+                _db.Recipes.Add(newRecipe);
+                _db.SaveChanges();
+            }
         }
-
-        //public List<Recipe> GetRecipeByIngredient(string ingredient)
-        //{
-        //    var recipes = _db.Recipes.Where(r => r.Ingredients = ingredient).ToList();
-        //    return recipes;
-        //}
     }
 }

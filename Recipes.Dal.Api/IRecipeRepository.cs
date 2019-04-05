@@ -13,6 +13,8 @@ namespace Recipes.Dal.Api
 
         Recipe GetRecipeByName(string name);
 
-        Recipe CreateRecipe(Recipe recipe);
+        List<Recipe> GetRecipeByIngredient(string ingredient);
+
+        void CreateRecipe(Recipe recipe);
     }
 }

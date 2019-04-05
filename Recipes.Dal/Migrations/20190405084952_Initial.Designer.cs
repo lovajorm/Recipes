@@ -9,14 +9,14 @@ using Recipes.Dal;
 namespace Recipes.Dal.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    [Migration("20190404055354_remakeRecipeIngredients")]
-    partial class remakeRecipeIngredients
+    [Migration("20190405084952_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -86,8 +86,8 @@ namespace Recipes.Dal.Migrations
 
             modelBuilder.Entity("Recipes.Bo.RecipeIngredient", b =>
                 {
-                    b.HasOne("Recipes.Bo.Ingredient", "Ingredient")
-                        .WithMany("RecipeIngredients")
+                    b.HasOne("Recipes.Bo.Ingredient")
+                        .WithMany("Recipes")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade);
 
