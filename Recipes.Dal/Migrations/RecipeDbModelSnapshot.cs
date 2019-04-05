@@ -14,7 +14,7 @@ namespace Recipes.Dal.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -84,8 +84,8 @@ namespace Recipes.Dal.Migrations
 
             modelBuilder.Entity("Recipes.Bo.RecipeIngredient", b =>
                 {
-                    b.HasOne("Recipes.Bo.Ingredient", "Ingredient")
-                        .WithMany("RecipeIngredients")
+                    b.HasOne("Recipes.Bo.Ingredient")
+                        .WithMany("Recipes")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade);
 

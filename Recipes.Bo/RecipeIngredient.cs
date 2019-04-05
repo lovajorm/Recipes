@@ -13,7 +13,6 @@ namespace Recipes.Bo
         [Key]
         [ForeignKey("Id")]
         public int IngredientId { get; set; }
-
         public float Value { get; set; }
         public Measure Measure { get; set; }
     }

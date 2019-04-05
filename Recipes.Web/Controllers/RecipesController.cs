@@ -13,7 +13,9 @@ using Newtonsoft.Json.Linq;
 using System.Web.Http;
 using System.Net;
 using AutoMapper;
+using Recipes.Dal;
 using Recipes.Dto;
+using System.Linq;
 
 namespace Recipes.Web.Controllers
 {
@@ -77,14 +79,23 @@ namespace Recipes.Web.Controllers
             return recipe;
         }
 
+        // GET api/recipes/name/tomato soup
+        //Get a recipe by recipe name
+        [HttpGet("ingredient/{ingredient}")]
+        public ActionResult<List<Recipe>> GetByIngredient(string ingredient)
+        {
+            //var recipes = _recipeRepository.GetRecipeByIngredient(ingredient);
+            _log.Info("Listing all recipes by ingredient.");
+            return new List<Recipe>();
+        }
 
-        // POST api/recipes
+
+        // POST api/recipes/create
         [HttpPost("create")]
         public HttpResponseMessage CreateRecipe([FromBody]Recipe recipe)
         {
             try
             {
-                //var recipe = _mapper.Map<Recipe>(recipeDto);
                 _recipeRepository.CreateRecipe(recipe);
                 _log.Info("Creating a new recipe.");
                 return new HttpResponseMessage(HttpStatusCode.Created);
@@ -96,8 +107,7 @@ namespace Recipes.Web.Controllers
             }
         }
 
-
-
+        
         // PUT api/recipes/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
