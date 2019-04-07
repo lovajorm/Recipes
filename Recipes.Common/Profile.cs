@@ -10,6 +10,8 @@ namespace Recipes.Common
             CreateMap<Ingredient, IngredientDto>().ReverseMap();
 
             CreateMap<RecipeIngredient, RecipeIngredientDto>().ReverseMap();
+
+            CreateMap<Recipe, RecipeDto>().ReverseMap();
         }
     }
 }

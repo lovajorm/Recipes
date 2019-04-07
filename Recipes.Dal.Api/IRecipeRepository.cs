@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Recipes.Bo;
+using Recipes.Dto;
 
 namespace Recipes.Dal.Api
 {
@@ -13,8 +14,14 @@ namespace Recipes.Dal.Api
 
         Recipe GetRecipeByName(string name);
 
-        List<Recipe> GetRecipeByIngredient(string ingredient);
+        List<Recipe> GetRecipeByIngredient(string name);
 
-        void CreateRecipe(Recipe recipe);
+        void CreateRecipe(RecipeDto recipeDto);
+
+        float CountRecipePrice(int id);
+
+        Recipe DoesRecipeExist(int id);
+
+        void DeleteRecipe(int id);
     }
 }

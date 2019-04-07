@@ -9,7 +9,6 @@ namespace Recipes.Bo
         [Key]
         [ForeignKey("Id")]
         public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
         [Key]
         [ForeignKey("Id")]
         public int IngredientId { get; set; }

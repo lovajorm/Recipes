@@ -36,27 +36,37 @@ namespace Recipes.Web.Controllers
         // GET api/recipes
         //List all recipes
         [HttpGet]
-        public ActionResult<string> Get()
+        public ActionResult<List<RecipeDto>> Get()
         {
             var recipes = _recipeRepository.GetAllRecipes();
-
-            string jsonData = JsonConvert.SerializeObject(recipes);
+            //mapping Recipe to RecipeDto
+            var listDest = _mapper.Map<List<Recipe>, List<RecipeDto>>(recipes);
 
             _log.Info("Listing all recipes.");
-            return jsonData;
+            return listDest;
         }
 
         // GET api/recipes/5
         //Get a recipe by id
         [HttpGet("{id:int}")]
-        public ActionResult<Recipe> Get(int id)
+        public ActionResult<RecipeDto> Get(int id)
         {
+            //Check to see if recipe exist and if not tell user it doesn't 
+            var recipeExist = _recipeRepository.DoesRecipeExist(id);
+            if (recipeExist == null)
+                return BadRequest("Recipe does not Exist");
+
             var recipe = _recipeRepository.GetRecipe(id);
 
-            JsonConvert.SerializeObject(recipe, Formatting.Indented);
+            //Mapping Recipe to RecipeDto so we can show recipePrice
+            var dest = _mapper.Map<Recipe, RecipeDto>(recipe);
+
+            //Calling method to sum ingredients and get total recipe price
+            var price = _recipeRepository.CountRecipePrice(id);
+            dest.RecipePrice = price;
 
             _log.Info("Getting a recipe by id.");
-            return recipe;
+            return dest;
         }
 
         // GET api/recipes/category/5
@@ -81,22 +91,23 @@ namespace Recipes.Web.Controllers
 
         // GET api/recipes/name/tomato soup
         //Get a recipe by recipe name
-        [HttpGet("ingredient/{ingredient}")]
-        public ActionResult<List<Recipe>> GetByIngredient(string ingredient)
+        [HttpGet("ingredient/{name}")]
+        public ActionResult<List<Recipe>> GetByIngredient(string name)
         {
-            //var recipes = _recipeRepository.GetRecipeByIngredient(ingredient);
+            //Change to string name of ingred, id for now
+            var recipes = _recipeRepository.GetRecipeByIngredient(name);
             _log.Info("Listing all recipes by ingredient.");
-            return new List<Recipe>();
+            return recipes;
         }
 
 
         // POST api/recipes/create
         [HttpPost("create")]
-        public HttpResponseMessage CreateRecipe([FromBody]Recipe recipe)
+        public HttpResponseMessage CreateRecipe([FromBody]RecipeDto recipeDto)
         {
             try
             {
-                _recipeRepository.CreateRecipe(recipe);
+                _recipeRepository.CreateRecipe(recipeDto);
                 _log.Info("Creating a new recipe.");
                 return new HttpResponseMessage(HttpStatusCode.Created);
             }
@@ -107,7 +118,16 @@ namespace Recipes.Web.Controllers
             }
         }
 
-        
+        // POST api/recipes/price/5
+        [HttpGet("price/{id}")]
+        public ActionResult<float> GetRecipePrice(int id)
+        {
+            var price = _recipeRepository.CountRecipePrice(id);
+            _log.Info("Sums up recipe price.");
+            return price;
+        }
+
+
         // PUT api/recipes/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
@@ -115,9 +135,18 @@ namespace Recipes.Web.Controllers
         }
 
         // DELETE api/recipes/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("delete/{id}")]
+        public ActionResult Delete(int id)
         {
+            //Check to see if recipe exist and if not tell user it doesn't 
+            var recipeExist = _recipeRepository.DoesRecipeExist(id);
+            if (recipeExist == null)
+                return BadRequest("Recipe does not Exist");
+
+            _recipeRepository.DeleteRecipe(id);
+            _log.Info($"Recipe with {id} was deleted successfully :)");
+
+            return Ok("Recipe is deleted :)");
         }
     }
 }
