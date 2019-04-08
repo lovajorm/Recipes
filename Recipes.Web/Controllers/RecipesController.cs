@@ -4,18 +4,8 @@ using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Bo;
 using Recipes.Dal.Api;
-using Newtonsoft.Json;
-using System.Text;
-using System.Net.Http;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using Newtonsoft.Json.Linq;
-using System.Web.Http;
-using System.Net;
 using AutoMapper;
-using Recipes.Dal;
 using Recipes.Dto;
-using System.Linq;
 
 namespace Recipes.Web.Controllers
 {
@@ -36,25 +26,23 @@ namespace Recipes.Web.Controllers
         // GET api/recipes
         //List all recipes
         [HttpGet]
-        public ActionResult<List<RecipeDto>> Get()
+        public ActionResult<List<Recipe>> Get()
         {
             var recipes = _recipeRepository.GetAllRecipes();
-            //mapping Recipe to RecipeDto
-            var listDest = _mapper.Map<List<Recipe>, List<RecipeDto>>(recipes);
 
             _log.Info("Listing all recipes.");
-            return listDest;
+            return recipes;
         }
 
         // GET api/recipes/5
         //Get a recipe by id
         [HttpGet("{id:int}")]
-        public ActionResult<RecipeDto> Get(int id)
+        public ActionResult<RecipeDto> GetById(int id)
         {
             //Check to see if recipe exist and if not tell user it doesn't 
             var recipeExist = _recipeRepository.DoesRecipeExist(id);
             if (recipeExist == null)
-                return BadRequest("Recipe does not Exist");
+                return NotFound("Recipe does not Exist");
 
             var recipe = _recipeRepository.GetRecipe(id);
 
@@ -62,7 +50,7 @@ namespace Recipes.Web.Controllers
             var dest = _mapper.Map<Recipe, RecipeDto>(recipe);
 
             //Calling method to sum ingredients and get total recipe price
-            var price = _recipeRepository.CountRecipePrice(id);
+            var price = _recipeRepository.SumRecipePrice(id);
             dest.RecipePrice = price;
 
             _log.Info("Getting a recipe by id.");
@@ -72,9 +60,9 @@ namespace Recipes.Web.Controllers
         // GET api/recipes/category/5
         //List all recipes by category
         [HttpGet("category/{id:int}")]
-        public ActionResult<List<Recipe>> GetByCategory(int id)
+        public ActionResult<List<Recipe>> GetByCategory(string name)
         {
-            var recipes = _recipeRepository.GetByCategory(id);
+            var recipes = _recipeRepository.GetByCategory(name);
             _log.Info("Listing all recipes by given categoryid.");
             return recipes;
         }
@@ -94,7 +82,6 @@ namespace Recipes.Web.Controllers
         [HttpGet("ingredient/{name}")]
         public ActionResult<List<Recipe>> GetByIngredient(string name)
         {
-            //Change to string name of ingred, id for now
             var recipes = _recipeRepository.GetRecipeByIngredient(name);
             _log.Info("Listing all recipes by ingredient.");
             return recipes;
@@ -103,18 +90,21 @@ namespace Recipes.Web.Controllers
 
         // POST api/recipes/create
         [HttpPost("create")]
-        public HttpResponseMessage CreateRecipe([FromBody]RecipeDto recipeDto)
+        public IActionResult CreateRecipe([FromBody]RecipeDto recipeDto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
                 _recipeRepository.CreateRecipe(recipeDto);
                 _log.Info("Creating a new recipe.");
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                return Ok($"Recipe was created successfully :)");
             }
             catch (Exception e)
             {
                 _log.Error($"Failed to create recipe. {e}");
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return BadRequest($"Failed to create recipe. {e}");
             }
         }
 
@@ -122,17 +112,16 @@ namespace Recipes.Web.Controllers
         [HttpGet("price/{id}")]
         public ActionResult<float> GetRecipePrice(int id)
         {
-            var price = _recipeRepository.CountRecipePrice(id);
+            //Check to see if recipe exist and if not tell user it doesn't 
+            var recipeExist = _recipeRepository.DoesRecipeExist(id);
+            if (recipeExist == null)
+                return BadRequest("Recipe does not Exist");
+
+            var price = _recipeRepository.SumRecipePrice(id);
             _log.Info("Sums up recipe price.");
             return price;
         }
 
-
-        // PUT api/recipes/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
         // DELETE api/recipes/5
         [HttpDelete("delete/{id}")]
