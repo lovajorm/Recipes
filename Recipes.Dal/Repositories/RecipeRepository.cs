@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.InteropServices.WindowsRuntime;
 using AutoMapper;
 using log4net;
 using Recipes.Bo;
@@ -27,7 +24,7 @@ namespace Recipes.Dal.Repositories
         public List<Recipe> GetAllRecipes()
         {
             var recipes = _db.Recipes.ToList();
-            
+
             return recipes;
         }
 
@@ -39,9 +36,12 @@ namespace Recipes.Dal.Repositories
         }
 
         //List all recipes by category
-        public List<Recipe> GetByCategory(int id)
+        public List<Recipe> GetByCategory(string name)
         {
-            var recipes = _db.Recipes.Where(r => r.CategoryId == id).ToList();
+            var category = _db.Categories.Where(i => i.CategoryName == name).FirstOrDefault();
+
+            var recipes = _db.Recipes.Where(r => r.CategoryId == category.Id).ToList();
+
             return recipes;
         }
 
@@ -55,9 +55,12 @@ namespace Recipes.Dal.Repositories
         //List all recipes by ingredient
         public List<Recipe> GetRecipeByIngredient(string name)
         {
+            //Find an ingredient by name
             var ingredient = _db.Ingredients.Where(i => i.Name == name).FirstOrDefault();
+            //List recipeingredients with same id as ingredient
             var recipeIngredients = _db.RecipeIngredients.Where(ri => ri.IngredientId == ingredient.Id).ToList();
 
+            //Find every recipe with same Id as the recipeingredients and add to list
             var recipes = new List<Recipe>();
             foreach (var item in recipeIngredients)
             {
@@ -66,9 +69,13 @@ namespace Recipes.Dal.Repositories
             return recipes;
         }
 
-        public void CreateIngredient(RecipeDto recipeDto)
+
+        //Create a new recipe
+        public void CreateRecipe(RecipeDto recipeDto)
         {
-            //Create ingrenient if it doesnt exist in DB
+            var recipeIngredients = new List<RecipeIngredient>();
+
+            //Create ingrenient if it doesnt exist in DB when creating a recipe
             foreach (var ingredient in recipeDto.RecipeIngredients)
             {
                 var ingredientExist = _db.Ingredients.Where(i => i.Id == ingredient.IngredientId).FirstOrDefault();
@@ -81,20 +88,14 @@ namespace Recipes.Dal.Repositories
                         UnitPrice = ingredient.UnitPrice
                     };
                     _db.Ingredients.Add(newIngredient);
+                    _db.SaveChanges();
+
+                    ingredient.IngredientId = newIngredient.Id;
                 }
-            }
-            _db.SaveChanges();
-        }
 
-        //Create a new recipe
-        public void CreateRecipe(RecipeDto recipeDto)
-        {
-            CreateIngredient(recipeDto);
-            //Adding ingredients to RecipeIngredients
-            var recipeIngredients = new List<RecipeIngredient>();
-
-            foreach (var ingredient in recipeDto.RecipeIngredients)
-            {
+                //Adding ingredients to RecipeIngredients
+                //foreach (var ingredient in recipeDto.RecipeIngredients)
+                //{
                 var recipeIngredient2 = new RecipeIngredient()
                 {
                     RecipeId = ingredient.RecipeId,
@@ -119,10 +120,14 @@ namespace Recipes.Dal.Repositories
             _db.SaveChanges();
         }
 
-        public float CountRecipePrice(int id)
+        public float SumRecipePrice(int id)
         {
+            //list all recipeingredients with same recipeId
             var ingredientList = _db.RecipeIngredients.Where(r => r.RecipeId == id).ToList();
 
+            //Linq join to sum unitPice for every ingredient in a recipe,
+            //for every ingredientId with the same recipeId in recipeIngredient
+            //sum unitPrice in Ingredient
             var price = ingredientList.Join(_db.Ingredients,
                 i => i.IngredientId,
                 ig => ig.Id,
@@ -132,6 +137,7 @@ namespace Recipes.Dal.Repositories
             return price;
         }
 
+        //Check if recipe exist in DB
         public Recipe DoesRecipeExist(int id)
         {
             var recipeExist = _db.Recipes.Where(i => i.Id == id).FirstOrDefault();
@@ -139,6 +145,7 @@ namespace Recipes.Dal.Repositories
             return recipeExist;
         }
 
+        //Delete a recipe by id
         public void DeleteRecipe(int id)
         {
             var recipe = _db.Recipes.Where(r => r.Id == id).FirstOrDefault();
@@ -149,7 +156,7 @@ namespace Recipes.Dal.Repositories
     }
 }
 
-//example json to paste into postman to create a recipe http://localhost:56689/api/recipes/create
+//sample json to paste into postman to create a recipe http://localhost:56689/api/recipes/create
 
 //{
 //"Name": "Chilli tofu stir-fry with soba noodles",
@@ -158,8 +165,8 @@ namespace Recipes.Dal.Repositories
 //"Difficulty": 0,
 //"RecipeIngredients": [ { "IngredientId": 4, "Value": 2 },
 //{ "IngredientId": 7, "Value": 2, "Measure": 2 },
-//{ "IngredientId": 28, "Value": 2, "Measure": 2, "Name": "Tofu", "UnitPrice": 55 },
-//{ "IngredientId": 29, "Value": 2, "Measure": 2, "Name": "Broccoli", "UnitPrice": 15 },
-//{ "IngredientId": 30, "Value": 2, "Measure": 2, "Name": "Noodles", "UnitPrice": 5 }
+//{ "Value": 2, "Measure": 2, "Name": "Tofu", "UnitPrice": 55 },
+//{ "Value": 2, "Measure": 2, "Name": "Broccoli", "UnitPrice": 15 },
+//{ "Value": 2, "Measure": 2, "Name": "Noodles", "UnitPrice": 5 }
 //]
 //}

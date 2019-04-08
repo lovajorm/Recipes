@@ -13,9 +13,9 @@ namespace Recipes.Dal
             builder.Entity<RecipeIngredient>().HasKey(t => new { t.RecipeId, t.IngredientId });
         }
 
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
     }
 }

@@ -9,8 +9,8 @@ using Recipes.Dal;
 namespace Recipes.Dal.Migrations
 {
     [DbContext(typeof(RecipeDb))]
-    [Migration("20190405084952_Initial")]
-    partial class Initial
+    [Migration("20190408143922_addedDataAnnoutations")]
+    partial class addedDataAnnoutations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,9 @@ namespace Recipes.Dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CategoryName");
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -39,7 +41,9 @@ namespace Recipes.Dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<float>("UnitPrice");
 
@@ -56,11 +60,14 @@ namespace Recipes.Dal.Migrations
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000);
 
                     b.Property<int>("Difficulty");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -91,7 +98,7 @@ namespace Recipes.Dal.Migrations
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Recipes.Bo.Recipe", "Recipe")
+                    b.HasOne("Recipes.Bo.Recipe")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade);

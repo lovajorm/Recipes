@@ -10,7 +10,7 @@ namespace Recipes.Dal.Api
 
         Recipe GetRecipe(int id);
 
-        List<Recipe> GetByCategory(int id);
+        List<Recipe> GetByCategory(string name);
 
         Recipe GetRecipeByName(string name);
 
@@ -18,7 +18,7 @@ namespace Recipes.Dal.Api
 
         void CreateRecipe(RecipeDto recipeDto);
 
-        float CountRecipePrice(int id);
+        float SumRecipePrice(int id);
 
         Recipe DoesRecipeExist(int id);
 

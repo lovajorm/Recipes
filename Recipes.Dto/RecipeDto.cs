@@ -9,6 +9,7 @@ namespace Recipes.Dto
         public string Name { get; set; }
         public string Description { get; set; }
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public Difficulty Difficulty { get; set; }
         public IList<RecipeIngredientDto> RecipeIngredients { get; set; }
         public float RecipePrice { get; set; }
