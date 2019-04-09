@@ -32,6 +32,7 @@ namespace Recipes.Web
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
 
+            //Configure Automapper
             var config = new AutoMapper.MapperConfiguration(c =>
             {
                 c.AddProfile(new Profile());

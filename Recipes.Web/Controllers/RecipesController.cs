@@ -59,17 +59,25 @@ namespace Recipes.Web.Controllers
 
         // GET api/recipes/category/5
         //List all recipes by category
-        [HttpGet("category/{id:int}")]
+        [HttpGet("category/{name}")]
         public ActionResult<List<Recipe>> GetByCategory(string name)
         {
-            var recipes = _recipeRepository.GetByCategory(name);
-            _log.Info("Listing all recipes by given categoryid.");
-            return recipes;
+            try
+            {
+                var recipes = _recipeRepository.GetByCategory(name);
+                _log.Info("Listing all recipes by given category name.");
+                return recipes;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to list recipes by category. {e}");
+                return BadRequest("Failed to list recipes by category.");
+            }
         }
 
         // GET api/recipes/name/tomato soup
         //Get a recipe by recipe name
-        [HttpGet("name/{name}")]
+        [HttpGet("recipe/{name}")]
         public ActionResult<Recipe> GetByName(string name)
         {
             var recipe = _recipeRepository.GetRecipeByName(name);
