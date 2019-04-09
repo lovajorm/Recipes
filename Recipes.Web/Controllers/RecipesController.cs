@@ -28,10 +28,17 @@ namespace Recipes.Web.Controllers
         [HttpGet]
         public ActionResult<List<Recipe>> Get()
         {
-            var recipes = _recipeRepository.GetAllRecipes();
-
-            _log.Info("Listing all recipes.");
-            return recipes;
+            try
+            {
+                var recipes = _recipeRepository.GetAllRecipes();
+                _log.Info("Listing all recipes.");
+                return recipes;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to list recipes. {e}");
+                return BadRequest("Failed to list recipes.");
+            }
         }
 
         // GET api/recipes/5
@@ -39,22 +46,32 @@ namespace Recipes.Web.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<RecipeDto> GetById(int id)
         {
-            //Check to see if recipe exist and if not tell user it doesn't 
-            var recipeExist = _recipeRepository.DoesRecipeExist(id);
-            if (recipeExist == null)
-                return NotFound("Recipe does not Exist");
+            try
+            {
+                //Check to see if recipe exist and if not tell user it doesn't 
+                var recipeExist = _recipeRepository.DoesRecipeExist(id);
+                if (!recipeExist)
+                    return NotFound("Recipe does not Exist");
 
-            var recipe = _recipeRepository.GetRecipe(id);
+                var recipe = _recipeRepository.GetRecipe(id);
 
-            //Mapping Recipe to RecipeDto so we can show recipePrice
-            var dest = _mapper.Map<Recipe, RecipeDto>(recipe);
+                //Mapping Recipe to RecipeDto so we can show recipePrice
+                var dest = _mapper.Map<Recipe, RecipeDto>(recipe);
 
-            //Calling method to sum ingredients and get total recipe price
-            var price = _recipeRepository.SumRecipePrice(id);
-            dest.RecipePrice = price;
+                var finaldest = _recipeRepository.GetUnitPriceToRecipeIngredient(dest);
 
-            _log.Info("Getting a recipe by id.");
-            return dest;
+                //Calling method to sum ingredients and get total recipe price
+                var price = _recipeRepository.SumRecipePrice(id);
+                dest.RecipePrice = price;
+
+                _log.Info("Getting a recipe by id.");
+                return finaldest;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to get recipe. {e}");
+                return BadRequest("Failed to get recipe.");
+            }
         }
 
         // GET api/recipes/category/5
@@ -80,9 +97,17 @@ namespace Recipes.Web.Controllers
         [HttpGet("recipe/{name}")]
         public ActionResult<Recipe> GetByName(string name)
         {
-            var recipe = _recipeRepository.GetRecipeByName(name);
-            _log.Info("Listing all recipes by given recipename.");
-            return recipe;
+            try
+            {
+                var recipe = _recipeRepository.GetRecipeByName(name);
+                _log.Info("Listing all recipes by given recipename.");
+                return recipe;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to get recipe by name. {e}");
+                return BadRequest("Failed to get recipe by name.");
+            }
         }
 
         // GET api/recipes/name/tomato soup
@@ -90,9 +115,17 @@ namespace Recipes.Web.Controllers
         [HttpGet("ingredient/{name}")]
         public ActionResult<List<Recipe>> GetByIngredient(string name)
         {
-            var recipes = _recipeRepository.GetRecipeByIngredient(name);
-            _log.Info("Listing all recipes by ingredient.");
-            return recipes;
+            try
+            {
+                var recipes = _recipeRepository.GetRecipeByIngredient(name);
+                _log.Info("Listing all recipes by ingredient.");
+                return recipes;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to list recipes by ingredient. {e}");
+                return BadRequest("Failed to list recipes by ingredient.");
+            }
         }
 
 
@@ -120,14 +153,22 @@ namespace Recipes.Web.Controllers
         [HttpGet("price/{id}")]
         public ActionResult<float> GetRecipePrice(int id)
         {
-            //Check to see if recipe exist and if not tell user it doesn't 
-            var recipeExist = _recipeRepository.DoesRecipeExist(id);
-            if (recipeExist == null)
-                return BadRequest("Recipe does not Exist");
+            try
+            {
+                //Check to see if recipe exist and if not tell user it doesn't 
+                var recipeExist = _recipeRepository.DoesRecipeExist(id);
+                if (!recipeExist)
+                    return BadRequest("Recipe does not Exist");
 
-            var price = _recipeRepository.SumRecipePrice(id);
-            _log.Info("Sums up recipe price.");
-            return price;
+                var price = _recipeRepository.SumRecipePrice(id);
+                _log.Info("Sums up recipe price.");
+                return price;
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to get recipe price. {e}");
+                return BadRequest("Failed to get recipe price.");
+            }
         }
 
 
@@ -135,15 +176,67 @@ namespace Recipes.Web.Controllers
         [HttpDelete("delete/{id}")]
         public ActionResult Delete(int id)
         {
-            //Check to see if recipe exist and if not tell user it doesn't 
-            var recipeExist = _recipeRepository.DoesRecipeExist(id);
-            if (recipeExist == null)
-                return BadRequest("Recipe does not Exist");
+            try
+            {
+                //Check to see if recipe exist and if not tell user it doesn't 
+                var recipeExist = _recipeRepository.DoesRecipeExist(id);
+                if (!recipeExist)
+                    return BadRequest("Recipe does not Exist");
 
-            _recipeRepository.DeleteRecipe(id);
-            _log.Info($"Recipe with {id} was deleted successfully :)");
+                _recipeRepository.DeleteRecipe(id);
+                _log.Info($"Recipe with {id} was deleted successfully :)");
 
-            return Ok("Recipe is deleted :)");
+                return Ok("Recipe is deleted :)");
+            }
+            catch (Exception e)
+            {
+                _log.Error($"Failed to delete recipe. {e}");
+                return BadRequest($"Failed to delete recipe. {e}");
+            }
         }
     }
 }
+
+
+//[Fact]
+//public void RecipeSumTest()
+//{
+//var mock = new Mock<IRecipeRepository>();
+//var mock2 = new Mock<IIngredientRepository>();
+
+//var recipeIngredients = new List<RecipeIngredient>();
+//recipeIngredients.Add(new RecipeIngredient { IngredientId = 1, Measure = Measure.tbs, Value = 15 });
+//recipeIngredients.Add(new RecipeIngredient { IngredientId = 2, Measure = Measure.tbs, Value = 30 });
+//recipeIngredients.Add(new RecipeIngredient { IngredientId = 3, Measure = Measure.tbs, Value = 45 });
+
+//var recipe = new Recipes.Bo.Recipe
+//{
+//    RecipeIngredients = recipeIngredients
+//};
+
+//mock.Setup(x => x.GetRecipe(5)).Returns(recipe);
+
+//mock2.Setup(x => x.GetIngredient(It.IsAny<int>())).Returns(new Ingredient { UnitPrice = 15 });
+
+//var contr = new RecipesController(mock.Object, null, mock2.Object);
+
+//var result = contr.SumRecipePrice(5);
+
+//Assert.Equal(45, result);
+//}
+
+//public float SumRecipePrice(int id)
+//{
+////list all recipeingredients with same recipeId
+//var ingredientList = _recipeRepository.GetRecipe(id).RecipeIngredients;
+//var ingredients = new List<Ingredient>();
+
+//    foreach (var ingredient in ingredientList)
+//{
+//    ingredients.Add(_ingredientRepository.GetIngredient(ingredient.IngredientId));
+//}
+
+//var price = ingredients.Sum(x => x.UnitPrice);
+
+//    return price;
+//}
