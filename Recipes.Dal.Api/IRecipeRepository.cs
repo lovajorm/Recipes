@@ -10,6 +10,8 @@ namespace Recipes.Dal.Api
 
         Recipe GetRecipe(int id);
 
+        RecipeDto GetUnitPriceToRecipeIngredient(RecipeDto recipeDto);
+
         List<Recipe> GetByCategory(string name);
 
         Recipe GetRecipeByName(string name);
@@ -20,7 +22,7 @@ namespace Recipes.Dal.Api
 
         float SumRecipePrice(int id);
 
-        Recipe DoesRecipeExist(int id);
+        bool DoesRecipeExist(int id);
 
         void DeleteRecipe(int id);
     }

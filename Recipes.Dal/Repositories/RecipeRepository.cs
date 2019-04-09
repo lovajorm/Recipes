@@ -32,13 +32,42 @@ namespace Recipes.Dal.Repositories
         public Recipe GetRecipe(int id)
         {
             var recipe = _db.Recipes.FirstOrDefault(r => r.Id == id);
+
+            var recipeIngredients = _db.RecipeIngredients.Where(ri => ri.RecipeId == recipe.Id).ToList();
+
+            recipe.RecipeIngredients = recipeIngredients;
+
             return recipe;
+        }
+        
+        public RecipeDto GetUnitPriceToRecipeIngredient(RecipeDto recipeDto)
+        {
+            var ingredients = new List<Ingredient>();
+
+            //Add categoryName to recipeDto
+            var category = _db.Categories.FirstOrDefault(c => c.Id == recipeDto.CategoryId);
+            recipeDto.CategoryName = category.CategoryName;
+
+            //Set recipeName, ingredientName och unitPrice
+            foreach (var recipeIngredient in recipeDto.RecipeIngredients)
+            {
+                ingredients = _db.Ingredients.Where(i => i.Id == recipeIngredient.IngredientId).ToList();
+
+                recipeIngredient.RecipeName = recipeDto.Name;
+                
+                foreach (var ingredient in ingredients)
+                {
+                    recipeIngredient.Name = ingredient.Name;
+                    recipeIngredient.UnitPrice = ingredient.UnitPrice;
+                }
+            }
+            return recipeDto;
         }
 
         //List all recipes by category
         public List<Recipe> GetByCategory(string name)
         {
-            var category = _db.Categories.Where(i => i.CategoryName == name).FirstOrDefault();
+            var category = _db.Categories.FirstOrDefault(i => i.CategoryName == name);
 
             var recipes = _db.Recipes.Where(r => r.CategoryId == category.Id).ToList();
 
@@ -48,7 +77,7 @@ namespace Recipes.Dal.Repositories
         //Get a recipe by name
         public Recipe GetRecipeByName(string name)
         {
-            var recipe = _db.Recipes.Where(r => r.Name == name).FirstOrDefault();
+            var recipe = _db.Recipes.FirstOrDefault(r => r.Name == name);
             return recipe;
         }
 
@@ -56,7 +85,7 @@ namespace Recipes.Dal.Repositories
         public List<Recipe> GetRecipeByIngredient(string name)
         {
             //Find an ingredient by name
-            var ingredient = _db.Ingredients.Where(i => i.Name == name).FirstOrDefault();
+            var ingredient = _db.Ingredients.FirstOrDefault(i => i.Name == name);
             //List recipeingredients with same id as ingredient
             var recipeIngredients = _db.RecipeIngredients.Where(ri => ri.IngredientId == ingredient.Id).ToList();
 
@@ -78,7 +107,7 @@ namespace Recipes.Dal.Repositories
             //Create ingrenient if it doesnt exist in DB when creating a recipe
             foreach (var ingredient in recipeDto.RecipeIngredients)
             {
-                var ingredientExist = _db.Ingredients.Where(i => i.Id == ingredient.IngredientId).FirstOrDefault();
+                var ingredientExist = _db.Ingredients.FirstOrDefault(i => i.Id == ingredient.IngredientId);
                 if (ingredientExist == null)
                 {
                     //If ingrediens doesn't exist add it to DB
@@ -138,17 +167,19 @@ namespace Recipes.Dal.Repositories
         }
 
         //Check if recipe exist in DB
-        public Recipe DoesRecipeExist(int id)
+        public bool DoesRecipeExist(int id)
         {
-            var recipeExist = _db.Recipes.Where(i => i.Id == id).FirstOrDefault();
+            var recipeExist = _db.Recipes.FirstOrDefault(i => i.Id == id);
+            if (recipeExist == null)
+                return false;
 
-            return recipeExist;
+            return true;
         }
 
         //Delete a recipe by id
         public void DeleteRecipe(int id)
         {
-            var recipe = _db.Recipes.Where(r => r.Id == id).FirstOrDefault();
+            var recipe = _db.Recipes.FirstOrDefault(r => r.Id == id);
 
             _db.Recipes.Remove(recipe);
             _db.SaveChanges();
